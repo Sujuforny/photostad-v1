@@ -8,6 +8,8 @@ import FormREQ from "@/components/home/FormREQ"
 
 //import animation  
 import { motion, Variants } from "framer-motion"
+import { useGetUserQuery } from "@/store/features/user/userApiSlice"
+import { useSelector } from "react-redux"
 
 const imageBanner = "/assets/image/home/home-banner.png"
 const imageWatermark = "/assets/image/home/watermark-photo.png"
@@ -20,11 +22,17 @@ const lightBackground = " bg-white "
 //padding section
 const paddingSection = " pb-20 "
 
-let descriptionTutorials_two =
-	"	Start by designing a certificate template that includes relevant information such as the recipient name, the title of the certificate, the issuing organization name and logo, a description of the achievement, and any additional details you want to include. This template can be created using graphic design software or online certificate design tools."
 export default function Home() {
 
-
+	const {
+		data: user,
+		isLoading,
+		isSuccess,
+		isError,
+		error,
+	  } = useGetUserQuery();
+	  const data = useSelector((state) => state);
+	  console.log("data", data);
 	//description Tutorials
 	const [showMore, setShowMore] = useState(false)
 	const [showMore_one, setShowMore_one] = useState(false)
@@ -39,7 +47,6 @@ export default function Home() {
 	const handleToggle = () => {
 		setIsExpanded(!isExpanded)
 	}
-
 	return (
 		<main
 			className={

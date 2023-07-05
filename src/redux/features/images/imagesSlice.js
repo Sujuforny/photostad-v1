@@ -15,7 +15,10 @@ const imageSlice = createSlice({
 
     name: 'images',
     initialState,
-    reducers: {},
+    reducers: {
+
+
+    },
     extraReducers(builder){
         builder
         .addCase(fetchImages.pending,(state,action)=>{

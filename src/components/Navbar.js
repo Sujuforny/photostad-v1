@@ -12,8 +12,11 @@ import { darkMode } from "../../tailwind.config"
 import { RiMenu3Fill } from "react-icons/ri"
 import { BtnThemeToggle } from "@/components/BtnThemeToggle"
 
-import Head from "next/head"
 import { DarkThemeToggle, Flowbite } from "flowbite-react"
+import { useGetUserQuery } from "@/store/features/user/userApiSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { setCurrentUser } from "@/store/features/auth/authSlice"
+import { BASE_URL } from "@/app/api/BaseAPI"
 
 const MainNavBar = () => {
 	
@@ -27,6 +30,33 @@ const MainNavBar = () => {
 			setLogIN(true)
 		}
 	}, [session])
+
+
+	const {
+		data: user,
+		isLoading,
+		isSuccess,
+		isError,
+		error,
+	  } = useGetUserQuery();
+	  const data = useSelector((state) => state);
+	  console.log("data", data);
+	  const dispatch = useDispatch();
+	  useEffect(() => {
+		if (isSuccess) {
+		  dispatch(setCurrentUser(user));
+		}
+	  }, []);
+    if(user!=undefined) {
+		setLogIN(true)
+	   console.log("user", user);
+	   const nameUserImage = user?.data?.avatar?.name
+
+       //get image user
+	   
+
+	   console.log("userImage =>>",userImage);
+	}
 
 	// end of auth config
 	const { theme, setTheme } = useTheme()

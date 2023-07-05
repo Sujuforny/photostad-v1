@@ -67,35 +67,38 @@ const OtpVerification = () => {
       })
       .catch(error => console.log('error', error));
   };
-
   return (
     <div className="flex min-h-screen min-w-screen justify-center items-center">
-      <div className="border-2 w-[40%] rounded-xl py-5">
-        <h1 className="text-2xl text-center font-bold ">OTP Verification</h1>
-        <div className="flex gap-2 my-5 justify-center">
-          {otp.map((digit, index) => (
-            <input
-              type="text"
-              name="otp"
-              className="border-2 border-blue-600 w-12 h-12 text-2xl rounded-xl text-center"
-              maxLength={1}
-              key={index}
-              value={digit}
-              onChange={(event) => handleChange(event, index)}
-              onKeyDown={(event) => handleKeyDown(event, index)}
-              onFocus={(event) => event.target.select()}
-            />
-          ))}
+        <div className="border-2 w-[40%] rounded-xl py-5">
+            <div className='flex justify-center flex-col'>
+                <h1 className='text-center font-bold'>Verify Account</h1>
+                <img className= 'h-[350px]' src='https://img.icons8.com/?size=512&id=80366&format=png' />
+                <h4 className="text-center font-bold ">OTP Verification</h4>
+                <div className="flex gap-2 my-5 justify-center">
+                  {otp.map((digit, index) => (
+                    <input
+                      type="text"
+                      name="otp"
+                      className="border-2 border-blue-600 w-12 h-12 text-2xl rounded-xl text-center"
+                      maxLength={1}
+                      key={index}
+                      value={digit}
+                      onChange={(event) => handleChange(event, index)}
+                      onKeyDown={(event) => handleKeyDown(event, index)}
+                      onFocus={(event) => event.target.select()}
+                    />
+                  ))}
+                </div>
+                <div className="flex justify-center my-5">
+                  <button
+                    onClick={submitOtp}
+                    className="bg-blue-600 px-10 py-4 text-white text-xl font-bold rounded-xl"
+                  >
+                    Verify
+                  </button>
+                </div>
+              </div>
         </div>
-        <div className="flex justify-center my-5">
-          <button
-            onClick={submitOtp}
-            className="bg-blue-600 px-10 py-4 text-white text-xl font-bold rounded-xl"
-          >
-            Verify
-          </button>
-        </div>
-      </div>
     </div>
   );
 };
