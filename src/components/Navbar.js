@@ -16,47 +16,60 @@ import { DarkThemeToggle, Flowbite } from "flowbite-react"
 import { useGetUserQuery } from "@/store/features/user/userApiSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { setCurrentUser } from "@/store/features/auth/authSlice"
-import { BASE_URL } from "@/app/api/BaseAPI"
-
+ 
 const MainNavBar = () => {
-	
-	const [logIN, setLogIN] = useState(false)
-	// auth
-	const { data: session } = useSession()
+	// const [logIN, setLogIN] = useState(false)
+	// const [userImageUrl, setUserImageUrl] = useState("")
+	// const [userName, setUserName] = useState("")
+	// // auth
+	// const { data: session } = useSession()
+	// const dispatch = useDispatch();
 
-	// if log in set logIN to true
+    // //get user information
+	// const {
+	// 	data: user,
+	// 	isLoading,
+	// 	isSuccess,
+	// 	isError,
+	// 	error,
+	//   } = useGetUserQuery();
+
+	// //   const { data: filename } = useGetFileByNameQuery("0ba22587-47b3-49eb-874b-8dee871e9e87.jpeg");
+	// //   console.log(filename,"files name:")
+	//   console.log("user",user)
+	//   useEffect(() => {
+  	// 	if (isSuccess) {
+	// 	setLogIN(true)
+	// 	dispatch(setCurrentUser(user));
+	// 	console.log(user,"is user logged in");
+	// 	setUserImageUrl(user?.data.avatarUrl)
+	// 	setUserName(user?.data.familyName+" "+user?.data.givenName)
+	// 	}
+	//   }, [user]);
+
+	const [logIn, setLogIn] = useState(false);
+	const [userImageUrl, setUserImageUrl] = useState("");
+	const [userName, setUserName] = useState("");
+	const { data: session } = useSession();
+	const dispatch = useDispatch();
+	// Get user information
+	const { data: user, isSuccess,refetch } = useGetUserQuery();
+
+	console.log("user information", user)
+	// Handle successful user retrieval
 	useEffect(() => {
-		if (session) {
-			setLogIN(true)
-		}
-	}, [session])
+ 	
+	if (isSuccess && user) {
+		setLogIn(true);
+		dispatch(setCurrentUser(user));
 
-
-	const {
-		data: user,
-		isLoading,
-		isSuccess,
-		isError,
-		error,
-	  } = useGetUserQuery();
-	  const data = useSelector((state) => state);
-	  console.log("data", data);
-	  const dispatch = useDispatch();
-	  useEffect(() => {
-		if (isSuccess) {
-		  dispatch(setCurrentUser(user));
-		}
-	  }, []);
-    if(user!=undefined) {
-		setLogIN(true)
-	   console.log("user", user);
-	   const nameUserImage = user?.data?.avatar?.name
-
-       //get image user
-	   
-
-	   console.log("userImage =>>",userImage);
+		const { avatarUrl, familyName, givenName } = user.data;
+		setUserImageUrl(avatarUrl);
+		setUserName(`${familyName} ${givenName}`);
 	}
+	}, [dispatch, isSuccess, user,refetch]);
+
+	console.log("user", user);
 
 	// end of auth config
 	const { theme, setTheme } = useTheme()
@@ -157,7 +170,7 @@ const MainNavBar = () => {
 						<DarkThemeToggle />
 						{/*<ThemeSwitcher/>*/}
 					</span>
-					{session ? (
+					{user ? (
 						<div className='dropdown dropdown-end'>
 							<label
 								tabIndex={0}
@@ -166,7 +179,7 @@ const MainNavBar = () => {
 								<div className='md:w-10 md:h-10   w-7 h-7 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2'>
 									{/* eslint-disable-next-line @next/next/no-img-element */}
 									<img
-										src={session.user.image}
+										src={userImageUrl}
 										alt={"profile picture"}
 									/>
 								</div>
@@ -176,7 +189,7 @@ const MainNavBar = () => {
 								className='mt-3  dark:text-white dark:bg-slate-800 space-y-2  p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52'
 							>
 								<li className='dark:hover:bg-slate-400 '>
-									<Link href={'/profile/setting'} className='justify-between'>{session.user.name}</Link>
+									<Link href={'/profile/setting'} className='justify-between'>{userName}</Link>
 								</li>
 								<li className='dark:hover:bg-slate-400 rounded-sm'>
 									<Link href={"/profile/setting"}>Settings</Link>

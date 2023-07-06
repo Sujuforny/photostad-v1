@@ -11,6 +11,7 @@ import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
 import { useLoginMutation } from "@/store/features/auth/authApiSlice"
 import { setCredentials } from "@/store/features/auth/authSlice"
+import { useGetUserQuery } from "@/store/features/user/userApiSlice"
  
 
 const validationShcema = Yup.object({

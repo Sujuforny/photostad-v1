@@ -14,7 +14,6 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
 });
-
 // custom base query with re-authentication when token expires
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);

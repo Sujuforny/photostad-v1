@@ -23,16 +23,7 @@ const lightBackground = " bg-white "
 const paddingSection = " pb-20 "
 
 export default function Home() {
-
-	const {
-		data: user,
-		isLoading,
-		isSuccess,
-		isError,
-		error,
-	  } = useGetUserQuery();
-	  const data = useSelector((state) => state);
-	  console.log("data", data);
+	const {data:user} = useGetUserQuery()
 	//description Tutorials
 	const [showMore, setShowMore] = useState(false)
 	const [showMore_one, setShowMore_one] = useState(false)

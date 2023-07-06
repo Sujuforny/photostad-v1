@@ -1,24 +1,29 @@
 'use client'
-
 import {BASE_URL} from "@/app/api/BaseAPI";
+import { selectCurrentUser } from "@/store/features/auth/authSlice";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {useState} from "react";
+import { useSelector } from "react-redux";
 //import toastify
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function FormREQ() {
     // data user
-    const { data: session } = useSession()
-    const emailUser = session?.user.email
 
+    const { data: session } = useSession()
+    const dataUser = useSelector(selectCurrentUser)
+    
+    console.log(dataUser,"user in form");
+    if(dataUser){
+    const userUuid = dataUser?.data.uuid
+    console.log(userUuid,"user uuid in form");
+    }
+ 
 	const router = useRouter()
     const [submitting, setSubmitting] = useState(false);
     const handleSubmit = async (e) => {
-        if(emailUser==undefined) {
-           router.push("/login")
-        }
         await e.preventDefault();
         const email = e.target.email.value;
         const description = e.target.description.value;
@@ -26,25 +31,11 @@ export default function FormREQ() {
         console.log('Description:', description);
         console.log("hello", setSubmitting);
         let myHeaders = new Headers()
-        //find user by email
         myHeaders.append("Content-Type", "application/json")
-        let request = {
-            method: "GET",
-            headers: myHeaders,
-            redirect: "follow",
-        }
         try {
-
-            const res = await fetch(BASE_URL +
-                "users/email?email=" + emailUser,
-                request
-            );
-            const dataUser = await res.json();
-            console.log("User infor", dataUser )
-
-                //sent request 
+            //sent request 
             var raw = JSON.stringify({
-                userId:dataUser.data.id,
+                userUUID:userUuid,
                 description,
             })
             console.log("it eaw:::",raw);
@@ -55,7 +46,7 @@ export default function FormREQ() {
                 redirect: "follow",
             }
             const response = await fetch(BASE_URL +
-                "request-tutorials",
+                "request-tutorials/user-request",
                 requestOptions
             );
             const data = await response.json();
