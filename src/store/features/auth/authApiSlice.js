@@ -8,10 +8,48 @@ export const authApiSlice = apiSlice.injectEndpoints({
       query: (credentials) => ({
         url: "auth/login",
         method: "POST",
-        body: { ...credentials },
+        body: { ...credentials }
       }),
     }),
+    register: builder.mutation({
+      query: (credentials) => ({
+        url: "auth/register",
+        method: "POST",
+        body: { ...credentials }
+      })
+    }),
+    verify: builder.mutation({
+      query: (email) => ({
+        url: `auth/verify?email=${email}`,
+        method: "POST",
+      })
+    }),
+    checkVerify: builder.mutation({
+      query: (credentials) => ({
+        url: `auth/check-verify`,
+        method: "POST",
+        body: { ...credentials }
+      })
+    }),
+    getAdmin: builder.query({
+     query: () => `auth/dashboard/me`,
+    }),
+
+
+
+
+
+
+
+
   }),
 });
 // auto generated hooks for login mutation
-export const { useLoginMutation } = authApiSlice;
+// auth/check-verify auth/dashboard/me
+export const { 
+  useLoginMutation,
+  useRegisterMutation,
+  useVerifyMutation,
+  useCheckVerifyMutation,
+  useGetAdminQuery,
+ } = authApiSlice;

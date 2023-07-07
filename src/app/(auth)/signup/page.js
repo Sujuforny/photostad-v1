@@ -46,14 +46,12 @@ const Page = () => {
 			confirmedPassword,
 			roleIds: ["1"],
 		})
-
 		let requestOptions = {
 			method: "POST",
 			headers: myHeaders,
 			body: raw,
 			redirect: "follow",
 		}
-
 		fetch(`${BASE_URL}auth/register`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
@@ -63,14 +61,11 @@ const Page = () => {
 						method: "POST",
 						redirect: "follow",
 					}
-
 					fetch(`${BASE_URL}auth/verify?email=` + result.data, requestOptions)
 						.then((response) => response.json())
 						.then((result) => {
 							dispatch(addEmailUser(result?.data))
 							router.push("/otp-verification")
-							console.log(result)
-							alert("Please check your email to verify your account")
 						})
 						.catch((error) => console.log("error", error))
 				}
@@ -79,7 +74,6 @@ const Page = () => {
                 alert(error.message, "error please check your credentials")
               
             })
-
 		// end of submit to server
 	}
 

@@ -3,9 +3,11 @@ import { BASE_URL } from '@/app/api/BaseAPI';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from "next/navigation"
+import Link from 'next/link';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-
-const OtpVerification = () => {
+export default function  OtpVerification(){
 	const router = useRouter()
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const emailUser= useSelector((store) => store?.users?.emailUsers)
@@ -62,7 +64,16 @@ const OtpVerification = () => {
     fetch(BASE_URL+"auth/check-verify", requestOptions)
       .then(response => response.text())
       .then(result => {
-        alert(result)
+          toast.success('verify successfully', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
 				router.push("/login")
       })
       .catch(error => console.log('error', error));
@@ -71,15 +82,15 @@ const OtpVerification = () => {
     <div className="flex min-h-screen min-w-screen justify-center items-center">
         <div className="border-2 w-[40%] rounded-xl py-5">
             <div className='flex justify-center flex-col'>
-                <h1 className='text-center font-bold'>Verify Account</h1>
-                <img className= 'h-[350px]' src='https://img.icons8.com/?size=512&id=80366&format=png' />
-                <h4 className="text-center font-bold ">OTP Verification</h4>
-                <div className="flex gap-2 my-5 justify-center">
+                <h1 className='text-3xl text-center font-bold pb-5'>Verifivcation Code</h1>
+                <h4 className="text-center">Please enter the verifivcation code sent to </h4>
+                <p className='text-center pb-8'>{emailUser}</p>
+                <div className="flex gap-2 my-5 justify-center pb-8">
                   {otp.map((digit, index) => (
                     <input
                       type="text"
                       name="otp"
-                      className="border-2 border-blue-600 w-12 h-12 text-2xl rounded-xl text-center"
+                      className="border-2 border-black w-12 h-12 text-2xl rounded-xl text-center"
                       maxLength={1}
                       key={index}
                       value={digit}
@@ -89,18 +100,34 @@ const OtpVerification = () => {
                     />
                   ))}
                 </div>
+                <p className='text-[#555] text-center '>Didn't receive on OPT?</p>
+                <p className="text-center pb-8">
+                  <Link href="#">Resent OPT?</Link>
+    
+                </p>
                 <div className="flex justify-center my-5">
                   <button
                     onClick={submitOtp}
-                    className="bg-blue-600 px-10 py-4 text-white text-xl font-bold rounded-xl"
+                    className="bg-[#333] px-10 py-4 text-white text-xl font-bold rounded-xl"
                   >
                     Verify
                   </button>
+                  <ToastContainer
+                  position="top-center"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover={false}
+                  theme="light"
+                 />
                 </div>
               </div>
         </div>
     </div>
   );
 };
-
-export default OtpVerification;
+OtpVerification.displayName = 'OtpVerification';

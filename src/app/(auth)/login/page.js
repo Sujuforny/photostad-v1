@@ -36,14 +36,26 @@ const Page = () => {
     const handleSubmit = async (values) => {
       // Additional logic for handling form submission
       const { email, password } = values;
-      console.log("hello oo", email, password);
-      const { data } = await login({ email, password }).unwrap();
-      console.log("data user login =>",data);
-      dispatch(
-        setCredentials(data)
-      );
-      router.push("/")
+      try{
+        const { data } = await login({ email, password }).unwrap();
+        console.log("data user login =>",data);
+        dispatch(
+            setCredentials(data)
+        );
+        router.push("/")
+      }catch(error){
+        if (!error.response) {
+            alert("No Server Response");
+            console.log(error)
+          } else if (error.response.status === 400) {
+            alert("Missing email or password");
+          } else if (error.response.status === 403) {
+            alert("Forbidden - You don't have permission to access this resource");
+          }
+      }
     };
+    
+ 
       // check if log in success redirect to home page
     // if (session) {
     //     router.push("/")

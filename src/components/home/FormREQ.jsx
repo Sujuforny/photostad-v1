@@ -1,9 +1,9 @@
 'use client'
 import {BASE_URL} from "@/app/api/BaseAPI";
-import { selectCurrentUser } from "@/store/features/auth/authSlice";
-import { useSession } from "next-auth/react";
+import { selectCurrentUser, selectCurrentUserData } from "@/store/features/auth/authSlice";
+import { useAddRequestTutorialsMutation } from "@/store/features/requestTutorial/requestTutorialApiSlice";
 import { useRouter } from "next/navigation";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { useSelector } from "react-redux";
 //import toastify
 import { ToastContainer, toast } from 'react-toastify';
@@ -11,62 +11,64 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function FormREQ() {
     // data user
-
-    const { data: session } = useSession()
-    const dataUser = useSelector(selectCurrentUser)
-    
-    console.log(dataUser,"user in form");
-    if(dataUser){
-    const userUuid = dataUser?.data.uuid
-    console.log(userUuid,"user uuid in form");
-    }
- 
+    const [userUUID , setUserUUID] = useState("")
+    const dataUsers = useSelector(selectCurrentUserData)
+    console.log("dataUser1---->",dataUsers);
+    useEffect(() => {
+        if (dataUsers) {
+          setUserUUID(dataUsers.uuid);
+          console.log("UUID", userUUID);
+        }
+      }, [dataUsers]);
 	const router = useRouter()
     const [submitting, setSubmitting] = useState(false);
+	const [addRequestTutorials, {isLoading,isError,isSuccess}] = useAddRequestTutorialsMutation();
     const handleSubmit = async (e) => {
+        if(!dataUsers){
+            toast.warn('You need to login!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+            router.push("/login")
+            return;
+        }
         await e.preventDefault();
         const email = e.target.email.value;
         const description = e.target.description.value;
-        console.log('Email:', email);
-        console.log('Description:', description);
-        console.log("hello", setSubmitting);
-        let myHeaders = new Headers()
-        myHeaders.append("Content-Type", "application/json")
-        try {
-            //sent request 
-            var raw = JSON.stringify({
-                userUUID:userUuid,
-                description,
-            })
-            console.log("it eaw:::",raw);
-            let requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow",
-            }
-            const response = await fetch(BASE_URL +
-                "request-tutorials/user-request",
-                requestOptions
-            );
-            const data = await response.json();
-            toast.success('🦄 successfully', {
-                position: "top-right",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                theme: "light",
-                });
-                e.target.reset();
-                setSubmitting(true);
-            setTimeout(() => {
-                setSubmitting(false);
-            }, 5000);
+        try{
+    	const {data} =await addRequestTutorials({ userUUID, description}).unwrap();
+
         } catch (error) {
-            console.log("error", error);
+            console.log("hello nyny",error);
+            if (error.data.code === 404) {
+                console.log("dg ey te");
+                toast.warn('send to request false!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
+              }
         }
+ 
+    }
+    if (isLoading){
+        console.log("loading")
+    return (
+      <div className="flex min-h-screen w-1/2  items-center justify-center p-24">
+        Loading...
+      </div>
+    );
     }
     return (
         <>
@@ -83,6 +85,7 @@ export default function FormREQ() {
                     id="email"
                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-[16px] focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                     placeholder="photostad"
+                    required
                 />
             </div>
             <div className="mb-6">
@@ -94,6 +97,7 @@ export default function FormREQ() {
                 </label>
                 <textarea
                     id="description"
+                    required
                     className="shadow-sm rounded-[16px] w-full  h-52 bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                 />
             </div>
@@ -120,6 +124,30 @@ export default function FormREQ() {
             pauseOnHover={false}
             theme="light"
             />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover={false}
+                theme="light"
+                />
+                <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                />
         </>
     )
 }

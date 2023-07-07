@@ -24,6 +24,7 @@ const paddingSection = " pb-20 "
 
 export default function Home() {
 	const {data:user} = useGetUserQuery()
+	
 	//description Tutorials
 	const [showMore, setShowMore] = useState(false)
 	const [showMore_one, setShowMore_one] = useState(false)
@@ -82,7 +83,7 @@ export default function Home() {
 					</motion.p>
                     <motion.div
 					initial={{x:-50,opacity:0,scale:2}}
-					whileInView={{x:0,rotate:360 ,opacity:1,scale:1}}
+					whileInView={{x:0,opacity:1,scale:1}}
 					viewport={{once:false,amount:0.5}}
 					transition={{duration:1.3,delay:0.8}}
 					>

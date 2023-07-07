@@ -1,41 +1,3 @@
-<<<<<<< HEAD
-
-import Image from "next/image"
-import { DoughnutChart } from "@/components/DoughnutChart"
-import Link from "next/link"
-import { BASE_URL } from "@/app/api/BaseAPI"
-
-export const Page = () => {
-
-	
-	
-	return (
-		<div className={"w-full p-5 mx-auto h-full dark:bg-primary"}>
-			<div className='db-bg dark:bg-primary sticky top-20 z-40'>
-				<h1
-					className={
-						"text-[32px] text-light dark:text-white font-semibold mb-5"
-					}
-				>
-					Reporting And Statistics
-				</h1>
-			
-				{/* breadcrumbs */}
-				<div className='text-sm breadcrumbs mb-3'>
-					<ul className='font-extralight text-light dark:text-white'>
-						<li>
-							<Link href='/admin/dashboard'>Admin</Link>
-						</li>
-						<li>
-							<Link href={"/admin/dashboard/tutorialmanagement"}>
-								Tutorial Management
-							</Link>
-						</li>
-					</ul>
-				</div>
-			</div>
-			{/* end of header section */}
-=======
 "use client"
 import Image from "next/image"
 import { DoughnutChart } from "@/components/DoughnutChart"
@@ -67,7 +29,6 @@ export default function Page() {
       setTotalOfRequestTutorial(dataRs.totalOfRequestTutorial);
       setTotalOfTutorial(dataRs.totalOfTutorial);
     };
->>>>>>> be03944a494de7cf6ded0d939322b54dc439957f
 
     fetchData();
   }, []);

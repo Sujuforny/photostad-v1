@@ -14,6 +14,7 @@ const store = configureStore({
     reducer: {
         // reducerPath is the name of the slice default is "api"
         [apiSlice.reducerPath]: apiSlice.reducer,
+        
         auth : authReducer,
         tutorials: tutorialSlice,
 		users: userSlice,
@@ -23,7 +24,6 @@ const store = configureStore({
 		upload: uploadSlice,
 		requestTutorials: requestTutorialSlice,
 		unreadRequest: unReadTutorialSlice,
-
     },
     // this need for rtks query to work with cache and other stuff
     middleware: (getDefaultMiddleware) => {

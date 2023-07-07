@@ -3,12 +3,12 @@ import Image from "next/image";
 import React from "react";
 import {useSession} from "next-auth/react";
 import {IoIosArrowDropleft} from 'react-icons/io'
-import SettingNavMenu from "@/components/SettingNavMenu";
-import Link from "next/link";
 import {SIdeSettingNav} from "@/components/SIdeSettingNav";
+import { useGetUserQuery } from "@/store/features/user/userApiSlice";
 
 export default function Page() {
     const {data: session} = useSession()
+
     return (<div className="bg-white dark:bg-slate-800 shadow-md w-[90%] mx-auto p-5 rounded-[16px]">
         {/* Page content here */}
         {/*<label htmlFor="my-drawer" className="btn btn-primary drawer-button">Open drawer</label>*/}

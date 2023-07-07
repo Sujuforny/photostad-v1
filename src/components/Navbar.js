@@ -2,7 +2,7 @@
 import Link from "next/link"
 import React, { useEffect, useState } from "react"
 
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 import { useTheme } from "next-themes"
 import ThemeSwitcher from "./ThemeSwitcher"
@@ -15,7 +15,11 @@ import { BtnThemeToggle } from "@/components/BtnThemeToggle"
 import { DarkThemeToggle, Flowbite } from "flowbite-react"
 import { useGetUserQuery } from "@/store/features/user/userApiSlice"
 import { useDispatch, useSelector } from "react-redux"
-import { setCurrentUser } from "@/store/features/auth/authSlice"
+import { logout, setCurrentUser } from "@/store/features/auth/authSlice"
+import { useGetAllRequestTutorialsQuery } from "@/store/features/requestTutorial/requestTutorialApiSlice"
+import { useGetFileByNameQuery } from "@/store/features/file/fileApiSlice"
+ 
+ 
  
 const MainNavBar = () => {
 	// const [logIN, setLogIN] = useState(false)
@@ -34,8 +38,7 @@ const MainNavBar = () => {
 	// 	error,
 	//   } = useGetUserQuery();
 
-	// //   const { data: filename } = useGetFileByNameQuery("0ba22587-47b3-49eb-874b-8dee871e9e87.jpeg");
-	// //   console.log(filename,"files name:")
+
 	//   console.log("user",user)
 	//   useEffect(() => {
   	// 	if (isSuccess) {
@@ -46,31 +49,36 @@ const MainNavBar = () => {
 	// 	setUserName(user?.data.familyName+" "+user?.data.givenName)
 	// 	}
 	//   }, [user]);
-
+    const router = useRouter()
 	const [logIn, setLogIn] = useState(false);
 	const [userImageUrl, setUserImageUrl] = useState("");
 	const [userName, setUserName] = useState("");
 	const { data: session } = useSession();
 	const dispatch = useDispatch();
 	// Get user information
-	const { data: user, isSuccess,refetch } = useGetUserQuery();
-
+	const { data: user, isSuccess } = useGetUserQuery();
 	console.log("user information", user)
+	// const { data:rep, isLoading } = useGetAllRequestTutorialsQuery({ page: 1, limit: 20 });
+	// console.log("rep data",rep);
+	// const { data: filename } = useGetFileByNameQuery("0ab0d490-efe3-4136-9ba1-a3fd76c106cc.png");
+	// console.log(filename,"files name:")
 	// Handle successful user retrieval
 	useEffect(() => {
- 	
 	if (isSuccess && user) {
 		setLogIn(true);
 		dispatch(setCurrentUser(user));
-
-		const { avatarUrl, familyName, givenName } = user.data;
+		const { avatarUrl, familyName, givenName } = user?.data;
 		setUserImageUrl(avatarUrl);
 		setUserName(`${familyName} ${givenName}`);
 	}
-	}, [dispatch, isSuccess, user,refetch]);
+	}, [dispatch, isSuccess, user]);
 
-	console.log("user", user);
-
+	const logouts = () => {
+		console.log("user logout");
+	    dispatch(logout());
+		console.log("hello oo");
+		window.location.reload();
+	}
 	// end of auth config
 	const { theme, setTheme } = useTheme()
 
@@ -167,7 +175,7 @@ const MainNavBar = () => {
 				<div className='navbar-end '>
 					<span className='mr-5'>
 						<BtnThemeToggle />
-						<DarkThemeToggle />
+						{/* <DarkThemeToggle /> */}
 						{/*<ThemeSwitcher/>*/}
 					</span>
 					{user ? (
@@ -197,7 +205,9 @@ const MainNavBar = () => {
 								<li className={"dark:hover:bg-red-500 dark:hover:text-white"}>
 									<button
 										className='py-2 bg-red-400 '
-										onClick={() => signOut()}
+										onClick={() => {
+											logouts()
+										}}
 									>
 										Sign out
 									</button>
@@ -267,7 +277,7 @@ const MainNavBar = () => {
 								Dashboard
 							</Link>
 						</li>
-							{session ? (
+							{user ? (
 								<li className={"dark:hover:text-white"}>
 									<Link
 										className={"dark:hover:text-white"}
