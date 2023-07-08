@@ -10,6 +10,7 @@ import { useTheme } from "next-themes"
 import Image from "next/image"
 import { useDispatch } from "react-redux"
 import { addEmailUser } from "@/redux/features/users/userSlice"
+import { useRegisterMutation, useVerifyMutation } from "@/store/features/auth/authApiSlice"
 
 const validationShcema = Yup.object({
 	email: Yup.string().email("Invalid email address").required("Required"),
@@ -20,60 +21,34 @@ const validationShcema = Yup.object({
 		.oneOf([Yup.ref("password"), null], "Passwords must match")
 		.required("Required"),
 })
-
 const Page = () => {
 	const dispatch = useDispatch()
 	// sign up succes and redirect to home page
-	const { data: session } = useSession()
 	// call theme
 	const { theme } = useTheme()
-
 	const router = useRouter()
-	if (session) {
-		router.push("/")
-	}
+	const [register,{isLoading:isLoadingRegister} ] = useRegisterMutation();
+	const [verify] = useVerifyMutation();
 
 	// register
 	const createNewUser = async (user) => {
 		const { email, password, confirmedPassword } = user
-
-		let myHeaders = new Headers()
-		myHeaders.append("Content-Type", "application/json")
-
-		let raw = JSON.stringify({
-			email,
-			password,
-			confirmedPassword,
-			roleIds: ["1"],
-		})
-		let requestOptions = {
-			method: "POST",
-			headers: myHeaders,
-			body: raw,
-			redirect: "follow",
-		}
-		fetch(`${BASE_URL}auth/register`, requestOptions)
-			.then((response) => response.json())
-			.then((result) => {
-				console.log(result)
-				if (result.code === 200) {
-					let requestOptions = {
-						method: "POST",
-						redirect: "follow",
-					}
-					fetch(`${BASE_URL}auth/verify?email=` + result.data, requestOptions)
-						.then((response) => response.json())
-						.then((result) => {
-							dispatch(addEmailUser(result?.data))
-							router.push("/otp-verification")
-						})
-						.catch((error) => console.log("error", error))
+		const roleIds = [1]
+        try{
+			const {data} = await register({email, password, confirmedPassword,roleIds}).unwrap()
+			console.log(data,"created :");
+			if(data){
+				try{
+                const{data:dataVerify} = await verify(email)
+				console.log("dataVerify:",dataVerify);
+				router.push("/otp-verification")
+			    }catch(e){
+					console.log("dataVerify failed",e)
 				}
-			})
-			.catch((error) => {
-                alert(error.message, "error please check your credentials")
-              
-            })
+			}
+		}catch(error){
+			console.log("error: " , error);
+		}
 		// end of submit to server
 	}
 

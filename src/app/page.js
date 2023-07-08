@@ -9,7 +9,9 @@ import FormREQ from "@/components/home/FormREQ"
 //import animation  
 import { motion, Variants } from "framer-motion"
 import { useGetUserQuery } from "@/store/features/user/userApiSlice"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { useGetAllRolesQuery } from "@/store/features/role/roleApiSlice"
+import { setRoles } from "@/store/features/role/roleSlice"
 
 const imageBanner = "/assets/image/home/home-banner.png"
 const imageWatermark = "/assets/image/home/watermark-photo.png"
@@ -24,6 +26,7 @@ const paddingSection = " pb-20 "
 
 export default function Home() {
 	const {data:user} = useGetUserQuery()
+    const dispatch = useDispatch();
 	
 	//description Tutorials
 	const [showMore, setShowMore] = useState(false)
@@ -39,6 +42,11 @@ export default function Home() {
 	const handleToggle = () => {
 		setIsExpanded(!isExpanded)
 	}
+	const {data:role} = useGetAllRolesQuery()
+	dispatch(
+	   setRoles(role)
+	);
+	const store = useSelector((store) => console.log(store))
 	return (
 		<main
 			className={

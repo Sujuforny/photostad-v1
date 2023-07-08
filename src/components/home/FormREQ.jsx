@@ -14,12 +14,6 @@ export default function FormREQ() {
     const [userUUID , setUserUUID] = useState("")
     const dataUsers = useSelector(selectCurrentUserData)
     console.log("dataUser1---->",dataUsers);
-    useEffect(() => {
-        if (dataUsers) {
-          setUserUUID(dataUsers.uuid);
-          console.log("UUID", userUUID);
-        }
-      }, [dataUsers]);
 	const router = useRouter()
     const [submitting, setSubmitting] = useState(false);
 	const [addRequestTutorials, {isLoading,isError,isSuccess}] = useAddRequestTutorialsMutation();
@@ -43,7 +37,16 @@ export default function FormREQ() {
         const description = e.target.description.value;
         try{
     	const {data} =await addRequestTutorials({ userUUID, description}).unwrap();
-
+        toast.success('successfully', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
         } catch (error) {
             console.log("hello nyny",error);
             if (error.data.code === 404) {
@@ -62,14 +65,22 @@ export default function FormREQ() {
         }
  
     }
-    if (isLoading){
-        console.log("loading")
-    return (
-      <div className="flex min-h-screen w-1/2  items-center justify-center p-24">
-        Loading...
-      </div>
-    );
-    }
+ 
+    // if (isLoading){
+    //     console.log("loading")
+    // return (
+    //   <div className="flex min-h-screen w-1/2  items-center justify-center p-24">
+    //     Loading...
+    //   </div>
+    // );
+    // }
+
+    useEffect(() => {
+        if (dataUsers) {
+          setUserUUID(dataUsers.uuid);
+          console.log("UUID", userUUID);
+        }
+      }, [dataUsers]);
     return (
         <>
         <form onSubmit={handleSubmit}>
@@ -113,8 +124,7 @@ export default function FormREQ() {
         </form>
         <ToastContainer
             position="top-right"
-            autoClose={1000}
-            limit={3}
+            autoClose={2000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
@@ -124,30 +134,6 @@ export default function FormREQ() {
             pauseOnHover={false}
             theme="light"
             />
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover={false}
-                theme="light"
-                />
-                <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-                />
         </>
     )
 }

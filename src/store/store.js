@@ -3,12 +3,13 @@ import { apiSlice } from "./api/apiSlice";
 import authReducer from "./features/auth/authSlice"
 import tutorialSlice from "@/redux/features/tutorial/tutorialSlice";
 import userSlice from "@/redux/features/users/userSlice";
-import roleSlice from "@/redux/features/role/roleSlice";
 import imagesSlice from "@/redux/features/images/imagesSlice";
 import certificateSlice from "@/redux/features/certificate/certificateSlice";
 import uploadSlice from "@/redux/features/file/uploadSlice";
 import requestTutorialSlice from "@/redux/features/requestTutorial/requestTutorialSlice";
 import unReadTutorialSlice from "@/redux/features/tutorial/reqTutorial/unReadTutorialSlice";
+import roleReducer from "./features/role/roleSlice"
+import imageSlice from "./features/image/imageSlice";
 
 const store = configureStore({
     reducer: {
@@ -16,10 +17,12 @@ const store = configureStore({
         [apiSlice.reducerPath]: apiSlice.reducer,
         
         auth : authReducer,
+        roles: roleReducer,
+        image: imageSlice,
+
+        
         tutorials: tutorialSlice,
 		users: userSlice,
-		roles: roleSlice,
-		images: imagesSlice,
 		certificates: certificateSlice,
 		upload: uploadSlice,
 		requestTutorials: requestTutorialSlice,

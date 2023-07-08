@@ -1,8 +1,8 @@
-import OPTComponent from "@/components/otp-verification/OTPComponent"
-export default function (){
+import OtpVerification from "@/components/otp-verification/OTPComponent"
+export default function Verification(){
     return (
         <main>
-            <OPTComponent/>
+            <OtpVerification/>
         </main>
     )
 }

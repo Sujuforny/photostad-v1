@@ -3,6 +3,7 @@ import { logout, setCredentials, setCurrentUser } from "../features/auth/authSli
 import { getDecryptedRefreshToken } from "@/lib/cryptography";
 
 // create base query with authentication
+
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
   prepareHeaders: (headers, { getState }) => {
@@ -54,18 +55,17 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
           result = await baseQuery(args, api, extraOptions);
         } else if (resultResponse.code === 401) {
           api.dispatch(logout());
-          alert("Your session has expired. Please login again.");
+          alert("Your session has expired. Please login again(x).");
         }
       } catch (error) {
         console.error("Failed to refresh access token", error);
-
         api.dispatch(logout());
       }
     } else {
       api.dispatch(logout());
-      alert("Your session has expired. Please login again.");
     }
   }
+  
   return result;
 };
 // create api slice with custom base query

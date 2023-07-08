@@ -6,11 +6,14 @@ import { useRouter } from "next/navigation"
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useCheckVerifyMutation, useVerifyMutation } from '@/store/features/auth/authApiSlice';
 
 export default function  OtpVerification(){
 	const router = useRouter()
+  const [verify, { isLoading }] = useVerifyMutation();
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const emailUser= useSelector((store) => store?.users?.emailUsers)
+  const isOtpEmpty = otp.some((digit) => digit === '');
   const handleChange = (event, index) => {
     const { value } = event.target;
 
@@ -42,28 +45,11 @@ export default function  OtpVerification(){
       }
     }
   };
-
+  const [checkVerify]= useCheckVerifyMutation()
   const submitOtp = () => {
-    const enteredOtp = otp.join('');
-
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-      "email": emailUser,
-      "verifiedCode": enteredOtp
-    });
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
-    };
-
-    fetch(BASE_URL+"auth/check-verify", requestOptions)
-      .then(response => response.text())
-      .then(result => {
+    const verifiedCode = otp.join('');
+    try{
+      const {data} = await checkVerify({emailUser, verifiedCode}).unwrap();
           toast.success('verify successfully', {
             position: "top-center",
             autoClose: 5000,
@@ -74,16 +60,25 @@ export default function  OtpVerification(){
             progress: undefined,
             theme: "light",
             });
-				router.push("/login")
-      })
-      .catch(error => console.log('error', error));
-  };
+          router.push("/login")
+    }catch(e){
+        console.log("error: " + e);
+    }
+  const resent =async ()=> {
+    try{
+      console.log("emailUser",emailUser);
+    const {data} = await verify(emailUser).unwrap()
+    console.log("data email verify",data)
+    }catch(error){
+      console.log("error", error)
+    }
+  } 
   return (
     <div className="flex min-h-screen min-w-screen justify-center items-center">
         <div className="border-2 w-[40%] rounded-xl py-5">
             <div className='flex justify-center flex-col'>
-                <h1 className='text-3xl text-center font-bold pb-5'>Verifivcation Code</h1>
-                <h4 className="text-center">Please enter the verifivcation code sent to </h4>
+                <h1 className='dark:text-[#ffffff] text-3xl text-center font-bold pb-5'>Verification Code</h1>
+                <h4 className="dark:text-[#ffffff] text-center">Please enter the verification code sent to </h4>
                 <p className='text-center pb-8'>{emailUser}</p>
                 <div className="flex gap-2 my-5 justify-center pb-8">
                   {otp.map((digit, index) => (
@@ -100,16 +95,17 @@ export default function  OtpVerification(){
                     />
                   ))}
                 </div>
-                <p className='text-[#555] text-center '>Didn't receive on OPT?</p>
+                <p className='text-[#555] text-center dark:text-[#bbbaba] pb-[5px]'>Did not receive on OPT?</p>
                 <p className="text-center pb-8">
-                  <Link href="#">Resent OPT?</Link>
+                  <button onClick={resent} className="dark:text-[#ffffff]" >Resent OPT?</button>
     
                 </p>
                 <div className="flex justify-center my-5">
                   <button
                     onClick={submitOtp}
-                    className="bg-[#333] px-10 py-4 text-white text-xl font-bold rounded-xl"
-                  >
+                    className="bg-[#333] cursor-pointer hover:bg-[#555] px-10 py-4 text-white text-xl font-bold rounded-xl"
+                    disabled={isOtpEmpty}
+                 >
                     Verify
                   </button>
                   <ToastContainer
@@ -130,4 +126,3 @@ export default function  OtpVerification(){
     </div>
   );
 };
-OtpVerification.displayName = 'OtpVerification';

@@ -24,7 +24,6 @@ const authSlice = createSlice({
       console.log("logout");
      
     },
-    
   },
 });
 

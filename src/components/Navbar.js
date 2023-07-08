@@ -74,11 +74,10 @@ const MainNavBar = () => {
 	}, [dispatch, isSuccess, user]);
 
 	const logouts = () => {
-		console.log("user logout");
 	    dispatch(logout());
-		console.log("hello oo");
+		router.push('/');
 		window.location.reload();
-	}
+	}	
 	// end of auth config
 	const { theme, setTheme } = useTheme()
 

@@ -28,7 +28,6 @@ const initialValues = {
 // test auth
 const Page = () => {
     const {theme} =useTheme()
-    const {data: session} = useSession()
     const router = useRouter()
     const dispatch = useDispatch();
     const [login, { isLoading }] = useLoginMutation();
@@ -44,6 +43,7 @@ const Page = () => {
         );
         router.push("/")
       }catch(error){
+         console.log("error login",error);
         if (!error.response) {
             alert("No Server Response");
             console.log(error)
@@ -54,12 +54,6 @@ const Page = () => {
           }
       }
     };
-    
- 
-      // check if log in success redirect to home page
-    // if (session) {
-    //     router.push("/")
-    // }
     return (
         <div
             className='bg-white dark:bg-black w-full lg:w-[1290px] items-center h-[100vh] mx-auto flex flex-wrap  '>
