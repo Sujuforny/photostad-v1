@@ -18,7 +18,7 @@ const baseQuery = fetchBaseQuery({
 // custom base query with re-authentication when token expires
 const baseQueryWithReAuth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-  if (result?.error?.status === 401) {
+  if (result?.error?.status === 500) {
     const refreshToken = await getDecryptedRefreshToken();
     console.log("resfreshToken in apiSlice", refreshToken);
     if (refreshToken) {

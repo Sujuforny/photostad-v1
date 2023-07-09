@@ -12,6 +12,7 @@ import { useGetUserQuery } from "@/store/features/user/userApiSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { useGetAllRolesQuery } from "@/store/features/role/roleApiSlice"
 import { setRoles } from "@/store/features/role/roleSlice"
+import { useSession } from "next-auth/react"
 
 const imageBanner = "/assets/image/home/home-banner.png"
 const imageWatermark = "/assets/image/home/watermark-photo.png"
@@ -27,6 +28,8 @@ const paddingSection = " pb-20 "
 export default function Home() {
 	const {data:user} = useGetUserQuery()
     const dispatch = useDispatch();
+	const session = useSession()
+console.log("session foooooooooooooor user",session);
 	
 	//description Tutorials
 	const [showMore, setShowMore] = useState(false)

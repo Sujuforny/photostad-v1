@@ -94,7 +94,7 @@ const MainNavBar = () => {
 	if (pathName.includes("/dashboard/*")) return null
 	return (
 		<Flowbite>
-		<div className='bg-white dark:bg-[#1e1e1e] sticky top-0 z-50  '>
+		<div className='bg-white dark:bg-[#1e1e1e] sticky top-0 z-50 '>
 			<div className='navbar md:h-[80px] px-5 w-full xl:w-[1290px] mx-auto max-sm:px-5'>
 				<div className='navbar-start'>
 					<Link href={"/"}>
