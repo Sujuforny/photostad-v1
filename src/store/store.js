@@ -9,7 +9,8 @@ import uploadSlice from "@/redux/features/file/uploadSlice";
 import requestTutorialSlice from "@/redux/features/requestTutorial/requestTutorialSlice";
 import unReadTutorialSlice from "@/redux/features/tutorial/reqTutorial/unReadTutorialSlice";
 import roleReducer from "./features/role/roleSlice"
-import imageSlice from "./features/image/imageSlice";
+import imageReducer from "./features/image/imageSlice";
+import anonymousReducer from "./features/anonymous/anonymousSlice";
 
 const store = configureStore({
     reducer: {
@@ -18,8 +19,8 @@ const store = configureStore({
         
         auth : authReducer,
         roles: roleReducer,
-        image: imageSlice,
-
+        image: imageReducer,
+        anonymous  : anonymousReducer,
         
         tutorials: tutorialSlice,
 		users: userSlice,

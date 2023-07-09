@@ -186,7 +186,7 @@ const MainNavBar = () => {
 								<div className='md:w-10 md:h-10   w-7 h-7 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2'>
 									{/* eslint-disable-next-line @next/next/no-img-element */}
 									<img
-										src={userImageUrl}
+										src={userImageUrl? userImageUrl:'https://photostad-api.istad.co/files/photo-user.jpg'}
 										alt={"profile picture"}
 									/>
 								</div>

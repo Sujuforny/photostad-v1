@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useState } from "react"
 import * as Yup from "yup"
 import {ErrorMessage, Field, Form, Formik} from "formik"
 import {FcGoogle} from "react-icons/fc"
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useLoginMutation } from "@/store/features/auth/authApiSlice"
 import { setCredentials } from "@/store/features/auth/authSlice"
 import { useGetUserQuery } from "@/store/features/user/userApiSlice"
+import { HiEye, HiEyeOff } from "react-icons/hi"
  
 
 const validationShcema = Yup.object({
@@ -31,6 +32,10 @@ const Page = () => {
     const router = useRouter()
     const dispatch = useDispatch();
     const [login, { isLoading }] = useLoginMutation();
+    const [showPassword, setShowPassword] = useState(false);
+    const handleTogglePassword = () => {
+          setShowPassword(!showPassword);
+      };
   
     const handleSubmit = async (values) => {
       // Additional logic for handling form submission
@@ -100,12 +105,26 @@ const Page = () => {
                                 <label className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
                                     Password
                                 </label>
+                                <div className="relative">
                                 <Field
                                     placeholder='enter your password'
-                                    type='password'
+                                    type={showPassword ? "text" : "password"}
                                     name='password'
                                     className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-[16px] focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                                 />
+                                   {showPassword ? (
+                                    <HiEye
+                                        className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                                        onClick={() => handleTogglePassword()}
+                                    />
+                                    ) : (
+                                    <HiEyeOff
+                                        className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                                        onClick={() => handleTogglePassword()}
+                                    />
+                                    )}
+                                </div>
+                           
                             </div>
                             <ErrorMessage
                                 name='password'

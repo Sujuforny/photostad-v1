@@ -14,10 +14,10 @@ export const userApiSlice = apiSlice.injectEndpoints({
           query: ({userEmail}) => `/users/email?email=${userEmail}`,
         }),  
         getUserById: builder.query({
-          query: ({id}) => `/users?id=${id}`,
+          query: (id) => `/users?id=${id}`,
         }), 
         removeUserById: builder.mutation({
-          query: ({id}) => ({
+          query: (id) => ({
             url: `users/${id}`,
             method: "DELETE",
           }),
@@ -37,7 +37,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         }),
         }),
         updatePasswordById: builder.mutation({
-          query: ({id,credentials}) => ({
+          query: (id,credentials) => ({
           url: `users/${id}/change-password`,
           method: "PUT",
           body:{...credentials}

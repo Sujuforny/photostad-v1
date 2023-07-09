@@ -1,16 +1,16 @@
 "use client"
-import React from "react"
+import React, { useState } from "react"
 import * as Yup from "yup"
 import { ErrorMessage, Field, Form, Formik } from "formik"
 import { FcGoogle } from "react-icons/fc"
 import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { BASE_URL } from "@/app/api/BaseAPI"
 import { useTheme } from "next-themes"
 import Image from "next/image"
-import { useDispatch } from "react-redux"
-import { addEmailUser } from "@/redux/features/users/userSlice"
 import { useRegisterMutation, useVerifyMutation } from "@/store/features/auth/authApiSlice"
+import { HiEye, HiEyeOff } from "react-icons/hi"
+import { useDispatch } from "react-redux"
+import { setEmail } from "@/store/features/anonymous/anonymousSlice"
 
 const validationShcema = Yup.object({
 	email: Yup.string().email("Invalid email address").required("Required"),
@@ -22,8 +22,9 @@ const validationShcema = Yup.object({
 		.required("Required"),
 })
 const Page = () => {
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const dispatch = useDispatch()
-	// sign up succes and redirect to home page
 	// call theme
 	const { theme } = useTheme()
 	const router = useRouter()
@@ -33,9 +34,9 @@ const Page = () => {
 	// register
 	const createNewUser = async (user) => {
 		const { email, password, confirmedPassword } = user
-		const roleIds = [1]
+		dispatch(setEmail(email));
         try{
-			const {data} = await register({email, password, confirmedPassword,roleIds}).unwrap()
+			const {data} = await register({email, password, confirmedPassword}).unwrap()
 			console.log(data,"created :");
 			if(data){
 				try{
@@ -51,6 +52,14 @@ const Page = () => {
 		}
 		// end of submit to server
 	}
+
+	const handleTogglePassword = (field) => {
+		if (field === "Password") {
+		  setShowPassword(!showPassword);
+		} else if (field === "confirmPassword") {
+		  setShowConfirmPassword(!showConfirmPassword);
+		}
+	  };
 
 	return (
 		<div className='bg-white  dark:bg-black w-full lg:w-[1290px] mx-auto flex flex-wrap items-center h-[100vh] '>
@@ -69,7 +78,6 @@ const Page = () => {
 						email: "",
 						password: "",
 						confirmedPassword: "",
-						roleIds: [2],
 					}}
 					validationSchema={validationShcema}
 					onSubmit={async (values, { setSubmitting, resetForm }) => {
@@ -107,12 +115,26 @@ const Page = () => {
 									<label className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
 										Password
 									</label>
+									<div className="relative">
+
 									<Field
 										placeholder='enter your password'
-										type='password'
+										type={showPassword ? "text" : "password"}
 										name='password'
 										className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-[16px] focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									/>
+									    {showPassword ? (
+										<HiEye
+										className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+										onClick={() => handleTogglePassword("Password")}
+										/>
+									) : (
+										<HiEyeOff
+										className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+										onClick={() => handleTogglePassword("Password")}
+										/>
+									)}
+									</div>
 								</div>
 								<ErrorMessage
 									name='password'
@@ -123,12 +145,25 @@ const Page = () => {
 									<label className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
 										Confirm password
 									</label>
+									<div className="relative">
 									<Field
 										name='confirmedPassword'
 										placeholder='confirm your password'
-										type='password'
+										type={showConfirmPassword ? "text" : "password"}
 										className='bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded-[16px]'
 									/>
+									    {showConfirmPassword ? (
+										<HiEye
+										className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+										onClick={() => handleTogglePassword("confirmPassword")}
+										/>
+									) : (
+										<HiEyeOff
+										className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+										onClick={() => handleTogglePassword("confirmPassword")}
+										/>
+									)}
+									</div>
 								</div>
 								<ErrorMessage
 									name='confirmedPassword'

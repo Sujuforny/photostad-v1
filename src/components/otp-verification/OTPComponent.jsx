@@ -1,22 +1,26 @@
 "use client"
-import { BASE_URL } from '@/app/api/BaseAPI';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from "next/navigation"
-import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCheckVerifyMutation, useVerifyMutation } from '@/store/features/auth/authApiSlice';
+import { selectEmail, selectIsFromForgetPw, setIsFormForgetPw } from '@/store/features/anonymous/anonymousSlice';
 
 export default function  OtpVerification(){
 	const router = useRouter()
+  const dispatch = useDispatch()
   const [verify, { isLoading }] = useVerifyMutation();
   const [otp, setOtp] = useState(new Array(6).fill(''));
-  const emailUser= useSelector((store) => store?.users?.emailUsers)
+  const email= useSelector(selectEmail)
   const isOtpEmpty = otp.some((digit) => digit === '');
+  const [isResent ,setIsResent] =useState(false)
+  const store = useSelector((state)=>state)
+  console.log("data in opt",store)
+  const isFromForgetPw =  useSelector(selectIsFromForgetPw)
+  console.log(isFromForgetPw,"0000000:hehehe");
   const handleChange = (event, index) => {
-    const { value } = event.target;
-
+  const { value } = event.target;
     if (isNaN(value)) return;
 
     const updatedOtp = [...otp];
@@ -45,12 +49,14 @@ export default function  OtpVerification(){
       }
     }
   };
-  const [checkVerify]= useCheckVerifyMutation()
-  const submitOtp = () => {
+  const [checkVerify,{IsLoading}]= useCheckVerifyMutation()
+  const submitOtp = async() => {
     const verifiedCode = otp.join('');
+    console.log(verifiedCode);
     try{
-      const {data} = await checkVerify({emailUser, verifiedCode}).unwrap();
-          toast.success('verify successfully', {
+      console.log(email,"email user here");
+      const data = await checkVerify({email, verifiedCode}).unwrap();
+      toast.success('verify successfully', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
@@ -60,16 +66,51 @@ export default function  OtpVerification(){
             progress: undefined,
             theme: "light",
             });
+        if(isFromForgetPw){
+          router.push("/sendemail")
+          dispatch(setIsFormForgetPw(false));
+          return;
+        }
           router.push("/login")
     }catch(e){
         console.log("error: " + e);
     }
+  }
   const resent =async ()=> {
+    setIsResent(true)
     try{
       console.log("emailUser",emailUser);
-    const {data} = await verify(emailUser).unwrap()
-    console.log("data email verify",data)
+      const data = await verify(emailUser).unwrap()
+      console.log("data email verify",data)
+      toast.info('Please check your Email', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+      setTimeout(() => {
+      setIsResent(false)
+
+        console.log("hello");
+      }, 3000);
     }catch(error){
+      toast.error('Resend failed !', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+      setTimeout(() => {
+          setIsResent(false)
+          }, 3000);
       console.log("error", error)
     }
   } 
@@ -79,7 +120,7 @@ export default function  OtpVerification(){
             <div className='flex justify-center flex-col'>
                 <h1 className='dark:text-[#ffffff] text-3xl text-center font-bold pb-5'>Verification Code</h1>
                 <h4 className="dark:text-[#ffffff] text-center">Please enter the verification code sent to </h4>
-                <p className='text-center pb-8'>{emailUser}</p>
+                <p className='text-center pb-8'>{email? email : "unknown@gmail.com"}</p>
                 <div className="flex gap-2 my-5 justify-center pb-8">
                   {otp.map((digit, index) => (
                     <input
@@ -97,7 +138,11 @@ export default function  OtpVerification(){
                 </div>
                 <p className='text-[#555] text-center dark:text-[#bbbaba] pb-[5px]'>Did not receive on OPT?</p>
                 <p className="text-center pb-8">
-                  <button onClick={resent} className="dark:text-[#ffffff]" >Resent OPT?</button>
+                  <button onClick={resent} className="dark:text-[#ffffff]" 
+                     disabled={isResent}
+                  >
+                    Resent OPT?
+                    </button>
     
                 </p>
                 <div className="flex justify-center my-5">
