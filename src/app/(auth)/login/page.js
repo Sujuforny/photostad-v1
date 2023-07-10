@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import React, { useState } from "react";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -9,7 +9,10 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { useLoginMutation } from "@/store/features/auth/authApiSlice";
+import {
+  useLoginMutation,
+  selectIsLoading // Import selectIsLoading from authApiSlice
+} from "@/store/features/auth/authApiSlice";
 import { setCredentials } from "@/store/features/auth/authSlice";
 import { useGetUserQuery } from "@/store/features/user/userApiSlice";
 import { HiEye, HiEyeOff } from "react-icons/hi";
@@ -54,10 +57,12 @@ const Page = () => {
       }
     }
   };
-  //login with google account
+
+  // login with google account
   const handleGoogleSignIn = () => {
     signIn("google"); // Replace "/" with your desired callback URL
   };
+
   return (
     <div className="bg-white dark:bg-black w-full lg:w-[1290px] items-center h-[100vh] mx-auto flex flex-wrap  ">
       <div className="w-1/2 hidden md:flex justify-center items-center ">
@@ -143,9 +148,12 @@ const Page = () => {
               <div className="mt-8">
                 <button
                   type="submit"
-                  className="rounded-[16px] cursor-pointer hover:bg-gray-700  bg-[#E85854] p-2.5 w-full text-white border-none "
+                  className={`rounded-[16px] cursor-pointer hover:bg-gray-700 bg-[#E85854] p-2.5 w-full text-white border-none ${
+                    isLoading ? "animate-pulse" : ""
+                  }`}
+                  disabled={isLoading} // Disable the button while loading
                 >
-                  Log in
+                  {isLoading ? "Log in" : "Log in"} {/* Show loading state or "Log in" */}
                 </button>
               </div>
               <div className="divider dark:divide-white">

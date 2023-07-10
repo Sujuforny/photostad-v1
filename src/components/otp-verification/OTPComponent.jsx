@@ -79,8 +79,8 @@ export default function  OtpVerification(){
   const resent =async ()=> {
     setIsResent(true)
     try{
-      console.log("emailUser",emailUser);
-      const data = await verify(emailUser).unwrap()
+      console.log("emailUser",email);
+      const data = await verify(email).unwrap()
       console.log("data email verify",data)
       toast.info('Please check your Email', {
         position: "top-center",
